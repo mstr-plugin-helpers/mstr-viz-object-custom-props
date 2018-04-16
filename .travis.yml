@@ -1,3 +1,10 @@
 language: node_js
 node_js:
-  - "node"
+- node
+deploy:
+  provider: npm
+  email: "bailey@dreamshake.net"
+  api_key:
+    secure: yakNbRU8X2710xHX1PdykpB+SvEbXjgeOpNf04WjSGrWv7YxXDOL538yC32CqJsMTSRC9j+GUpTluQrCce/rfjMEkc3dQ3pPwIMNHeZpxDnpewrS/ypQ3bMzCciItUUCzoNQJn3t5LFpCfQv2oAotxa/CEd0wB5ewtyxx3k6udmJ3JUBKsvCejjeUaubSqQNVgyfKERUHworCeCBtxyR2tx1Pgzc85wv9PZoQ/Bzj+q9Gf3y7MhOMmSp940xSjv6ybrpaeyzeANfVR9FOgWbPaMOvUlA/DrgWqoo2MyxHVglP231PWI8zeldzGMh/4dtCj+IJE2/H60qPVEa7fX+3VPDv/BKiX5zNet/gcbuGbdGMvTfyIxC4cvvyLxMwcDkgEHUURwd+DLBaygN43PQag2wXKJvnpYzML3AHsoVrn68WZrZq63ZhstI/a2gAaI8+2x+mmpsus4pso8I7/004yrBvTJcQ/dqTE0tJwKla1cO+hv8RzCtwSe9tIxpGXz/LPoBUJykllDH0E5EuTx17ecHMGLdseH384dP05mFSBUSPI4ujA50F3KdI5uFB79zmzYEyeo3vqgh3/rS9ROsR5lySPZ6tZNCnoApPNhPkq+H8vHpkKM/8EJZfOT1AbeWXTVSklcFb+Jatc/5F0xC9ddmbIlutGYZjpre5PtKjUA=
+  on:
+    tags: true
