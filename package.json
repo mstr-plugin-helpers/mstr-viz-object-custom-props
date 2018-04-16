@@ -4,7 +4,7 @@
   "main": "obj-custom-props.js",
   "license": "MIT",
   "scripts": {
-    "test": "standard",
+    "test": "standard src/",
     "docs": "jsdoc -r -d docs src/"
   },
   "devDependencies": {
