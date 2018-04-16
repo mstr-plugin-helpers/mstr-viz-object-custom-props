@@ -3,5 +3,10 @@
   "version": "1.0.0",
   "main": "obj-custom-props.js",
   "license": "MIT",
-  "private": true
+  "scripts": {
+    "test": "standard"
+  },
+  "devDependencies": {
+    "standard": "^11.0.1"
+  }
 }

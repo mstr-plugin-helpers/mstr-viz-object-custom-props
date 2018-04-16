@@ -6,7 +6,7 @@
  * @param {any} value the property value to save
  * @returns {undefined}
  */
-function setObjectobjectCustomProperty (objectId, prop, value) {
+function setObjectCustomProperty (objectId, prop, value) {
   let objectKey = 'object-' + objectId + '-' + prop
   this.setProperty(objectKey, value)
 }
