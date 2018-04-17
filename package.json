@@ -1,6 +1,6 @@
 {
   "name": "mstr-viz-object-custom-props",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "obj-custom-props.js",
   "license": "MIT",
   "scripts": {
