@@ -4,10 +4,18 @@
   "main": "obj-custom-props.js",
   "license": "MIT",
   "scripts": {
-    "test": "standard src/",
-    "docs": "jsdoc -r -d docs src/"
+    "test": "standard src/ && mocha --require babel-core/register",
+    "docs": "jsdoc -r -d docs src/",
+    "report-coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
   "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "chai-sinon": "^2.8.1",
+    "chai": "^4.1.2",
+    "mocha": "^5.1.0",
+    "nyc": "^11.6.0",
+    "sinon": "^4.5.0",
     "standard": "^11.0.1"
   }
 }
