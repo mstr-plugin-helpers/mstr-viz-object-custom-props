@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "pretest": "standard src",
-    "test": "mocha --require babel-core/register",
+    "test": "nyc --reporter=lcov mocha --require babel-core/register",
     "docs": "jsdoc -r -d docs src/",
     "report-coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },

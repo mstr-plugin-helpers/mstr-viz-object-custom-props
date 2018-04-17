@@ -4,6 +4,9 @@ node_js:
 install:
   - yarn global add codecov
   - yarn install
+script:
+  - yarn test
+  - yarn report-coverage
 deploy:
   provider: npm
   email: "bailey@dreamshake.net"
