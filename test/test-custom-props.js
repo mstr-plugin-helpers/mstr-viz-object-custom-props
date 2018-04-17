@@ -31,5 +31,22 @@ describe('#getObjectCustomProperty()', function () {
     spyGet.should.have.been.calledOnce
     spyGet.should.have.been.calledWith('object-id-prop')
   })
+})
 
+describe('#getObjectProperties()', function () {
+  let spyGet = sinon.spy()
+  let vizMock = {
+    getProperty: spyGet,
+    getObjectCustomProperty: objectPropertiesMixin.getObjectCustomProperty
+  }
+
+  it('should call getProperties appropriately', function () {
+    let spyGet = sinon.spy()
+    let vizMock = {
+      getProperties: spyGet,
+      getObjectProperties: objectPropertiesMixin.getObjectProperties
+    }
+    vizMock.getObjectProperties()
+    spyGet.should.have.been.calledOnce
+  })
 })
