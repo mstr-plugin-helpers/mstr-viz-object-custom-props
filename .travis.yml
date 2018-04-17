@@ -2,7 +2,8 @@ language: node_js
 node_js:
 - node
 install:
-  - npm install -g codecov
+  - yarn add -g codecov
+  - yarn
 deploy:
   provider: npm
   email: "bailey@dreamshake.net"
