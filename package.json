@@ -4,7 +4,8 @@
   "main": "obj-custom-props.js",
   "license": "MIT",
   "scripts": {
-    "test": "standard src/ && mocha --require babel-core/register",
+    "pretest": "standard src",
+    "test": "mocha --require babel-core/register",
     "docs": "jsdoc -r -d docs src/",
     "report-coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
