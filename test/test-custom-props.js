@@ -43,10 +43,11 @@ describe('#getObjectProperties()', function () {
   it('should call getProperties appropriately', function () {
     let spyGet = sinon.spy()
     let vizMock = {
-      getProperties: spyGet,
+      getProperties: function () { return {} },
       getObjectProperties: objectPropertiesMixin.getObjectProperties
     }
+    sinon.spy(vizMock, 'getProperties')
     vizMock.getObjectProperties()
-    spyGet.should.have.been.calledOnce
+    vizMock.getProperties.should.have.been.calledOnce
   })
 })
