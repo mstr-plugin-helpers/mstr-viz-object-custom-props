@@ -6,9 +6,9 @@
  * @param {any} value the property value to save
  * @returns {undefined}
  */
-function setObjectCustomProperty (objectId, prop, value) {
+function setObjectCustomProperty (objectId, prop, value, configObject) {
   let objectKey = 'object-' + objectId + '-' + prop
-  this.setProperty(objectKey, value)
+  this.setProperty(objectKey, value, configObject)
 }
 /**
  * Retrieves a property pertaining to a specific object from the MicroStrategy object model
