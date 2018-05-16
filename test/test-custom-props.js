@@ -78,4 +78,25 @@ describe('#getObjectProperties()', function () {
     results.key2.should.equal('value2')
     expect(results['hello-dave']).to.equal(undefined)
   })
+
+  it('should return custom properties from a JSON value with an appropriately formatted key', function () {
+    let jsonValue = JSON.stringify({
+      key: 'value',
+      key2: 'value2'
+    })
+    let vizMock = new VizMock({
+      'obj-id': jsonValue,
+      'hello-dave': 'ignore'
+    })
+
+    addMixin(vizMock)
+
+    sinon.spy(vizMock, 'getProperties')
+    let results = vizMock.getObjectProperties('id')
+    vizMock.getProperties.should.have.been.calledTwice
+    Object.keys(results).length.should.equal(2)
+    results.key.should.equal('value')
+    results.key2.should.equal('value2')
+    expect(results['hello-dave']).to.equal(undefined)
+  })
 })

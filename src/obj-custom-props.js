@@ -68,6 +68,26 @@ function deleteProperty (prop) {
   updateMetadataUUID(this)
 }
 
+function decodeValue (val) {
+  let returnVal = val
+  if (typeof val === 'string') {
+    try {
+      returnVal = JSON.parse(val)
+    } catch (error) {}
+  }
+  return returnVal
+}
+
+function encodeValue (val) {
+  let returnVal = val
+  if (typeof val === 'object') {
+    try {
+      returnVal = JSON.stringify(val)
+    } catch (error) {}
+  }
+  return returnVal
+}
+
 /**
  * Saves a property pertaining to a specific object into the MicroStrategy object model
  *
@@ -87,8 +107,7 @@ function setObjectCustomProperty (objectId, prop, value, configObject) {
   if (value != oldPropValue) {
       objectProperties[prop] = value
   }
-  let objectPropertiesStr = JSON.stringify(objectProperties)
-  this.setProperty(objectKey, objectPropertiesStr, configObject)
+  this.setProperty(objectKey, JSON.stringify(objectProperties), configObject)
 }
 
 /**
@@ -100,13 +119,7 @@ function setObjectCustomProperty (objectId, prop, value, configObject) {
  */
 function getObjectCustomProperty (objectId, prop) {
   checkMetdataVersion(this)
-  let objectPropsStr = this.getObjectProperties(objectId)
-  let objectProps
-  try {
-     objectProps = JSON.parse(objectPropsStr)
-  } catch (error) {
-    objectProps = objectPropsStr
-  }
+  let objectProps = this.getObjectProperties(objectId)
   return objectProps ? objectProps[prop] : undefined
 }
 
@@ -119,7 +132,7 @@ function getObjectCustomProperty (objectId, prop) {
 function getObjectProperties (objectId) {
   checkMetdataVersion(this)
   let props = this.getProperties()
-  return props[getObjectCustomPropertyKey(objectId)]
+  return decodeValue(props[getObjectCustomPropertyKey(objectId)])
 }
 
 let objectPropertiesMixin = {
