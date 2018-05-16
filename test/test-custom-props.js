@@ -34,7 +34,7 @@ describe('#setObjectCustomProperty()', function () {
   it('should call setProperty appropriately on the viz', function () {
     vizMock.setObjectCustomProperty('id', 'prop', 'value')
     spySet.should.have.been.calledTwice
-    spySet.should.have.been.calledWith('obj-id', { prop: 'value' })
+    spySet.should.have.been.calledWith('obj-id', JSON.stringify({ prop: 'value' }))
   })
 })
 
