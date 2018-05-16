@@ -87,7 +87,8 @@ function setObjectCustomProperty (objectId, prop, value, configObject) {
   if (value != oldPropValue) {
       objectProperties[prop] = value
   }
-  this.setProperty(objectKey, objectProperties, configObject)
+  let objectPropertiesStr = JSON.stringify(objectProperties)
+  this.setProperty(objectKey, objectPropertiesStr, configObject)
 }
 
 /**
@@ -99,7 +100,13 @@ function setObjectCustomProperty (objectId, prop, value, configObject) {
  */
 function getObjectCustomProperty (objectId, prop) {
   checkMetdataVersion(this)
-  let objectProps = this.getObjectProperties(objectId)
+  let objectPropsStr = this.getObjectProperties(objectId)
+  let objectProps
+  try {
+     objectProps = JSON.parse(objectPropsStr)
+  } catch (error) {
+    objectProps = objectPropsStr
+  }
   return objectProps ? objectProps[prop] : undefined
 }
 
