@@ -1,6 +1,6 @@
 {
   "name": "mstr-viz-object-custom-props",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "main": "src/obj-custom-props.js",
   "license": "MIT",
   "scripts": {
@@ -14,13 +14,12 @@
     "babel-preset-env": "^1.6.1",
     "chai": "^4.1.2",
     "chai-sinon": "^2.8.1",
-    "lodash": "^4.17.10",
     "mocha": "^5.1.0",
     "nyc": "^11.6.0",
     "sinon": "^5.0.3",
     "standard": "^11.0.1"
   },
   "dependencies": {
-    "uuid": "^3.2.1"
+    "lodash": "^4.17.10"
   }
 }
