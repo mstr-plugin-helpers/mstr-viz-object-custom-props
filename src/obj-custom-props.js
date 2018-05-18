@@ -1,5 +1,3 @@
-import {escape, unescape } from 'lodash'
-
 const CUSTOM_PROPERTY_NAME = 'objectCustomProps'
 
 function pickle (objectsProps) {

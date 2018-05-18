@@ -1,4 +1,3 @@
-import { escape, unescape } from 'lodash'
 import sinon from 'sinon'
 import chai from 'chai'
 import 'chai/register-should'
