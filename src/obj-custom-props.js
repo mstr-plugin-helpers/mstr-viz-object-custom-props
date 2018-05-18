@@ -1,4 +1,108 @@
-import uuidv4 from 'uuid/v4'
+import {escape, unescape } from 'lodash'
+
+const CUSTOM_PROPERTY_NAME = 'objectCustomProps'
+
+function pickle (objectsProps) {
+    return escape(JSON.stringify(objectsProps))
+  }
+function unPickle (inputString) {
+    try {
+      return JSON.parse(unescape(inputString))
+    } catch (error) {
+      console.warn(`Couldn\'t unpickle:\n ${inputString}`)
+      console.warn(error)
+    }
+  }
+
+function getObjectsProperties() {
+  let rawProperty = this.getProperty(CUSTOM_PROPERTY_NAME)
+  if (rawProperty) {
+    return unPickle(rawProperty)
+  } else {
+    return {}
+  }
+}
+
+function getObjectProperties(objectId) {
+  const objProps = getObjectsProperties.call(this)
+  return objProps[objectId] ? objProps[objectId] : {}
+}
+
+function getObjectCustomProperty(objectId, objectProp) {
+  const objProps = getObjectProperties.call(this, objectId)
+  return objProps ? objProps[objectProp] : undefined
+}
+
+function setObjectCustomProperty(objectId, objectProp, propValue, configObject) {
+  let objectsProperties = getObjectsProperties.call(this)
+  if (!objectsProperties[objectId]) {
+    objectsProperties[objectId] = {}
+  }
+  objectsProperties[objectId][objectProp] = propValue
+  this.setProperty(CUSTOM_PROPERTY_NAME, pickle(objectsProperties), configObject)
+}
+
+function deleteObjectProperties(objectId, configObject) {
+  let objectsProperties = getObjectsProperties()
+  delete objectsProperties[objectId]
+  setProperty.call(this, CUSTOM_PROPERTY_NAME, pickle(objectsProperties), configObject)
+}
+
+function migrateCustomObjectProps() {
+  let properties = this.getProperties()
+  let collatedProperties = {}
+  let propertiesToDelete = []
+  for(let property in properties) {
+    // determine if it's a property in the format we expect
+    if (property.includes('-')) {
+      const parts = property.split('-')
+      // if it's an old-fashion property, deal with it appropriately
+      if (parts.length === 3) {
+        if (parts[0] === 'metric' || parts[0] === 'obj') {
+          const objId = parts[1]
+          const objProp = parts[2]
+          const objValue = properties[property]
+          if (!collatedProperties[objId]) {
+            collatedProperties[objId] = {}
+          }
+          collatedProperties[objId][objProp] = objValue
+          propertiesToDelete.push(property)
+        }
+      } else {
+        if (parts[0] === 'obj') {
+          const objId = parts[1]
+          const objProps = properties[property]
+          if (typeof objProps === 'object') {
+            collatedProperties[objId] = objProps
+            propertiesToDelete.push(property)
+          }
+          if (typeof objProps === 'string') {
+            try {
+              let parsedObjProps = JSON.parse(unescape(objProps))
+              collatedProperties[objId] = parsedObjProps
+              propertiesToDelete.push(property)
+            } catch (error) {
+              console.warn(error)
+              console.warn(`Couldn't parse ${objectProps}`)
+            }
+          }
+        }
+      }
+    }
+  }
+
+  let objectsProperties = this.getObjectsProperties()
+  for (let oldKey in collatedProperties) {
+    if (!objectsProperties[oldKey]) {
+      objectsProperties[oldKey] = collatedProperties[oldKey]
+    }
+  }
+  let allProperties = this.getProperties()
+  propertiesToDelete.forEach(function (key) {
+    delete allProperties[key]
+  })
+  this.setProperty(CUSTOM_PROPERTY_NAME, pickle(objectsProperties))
+}
 
 /**
  * Adds the mixin to the target object
@@ -10,139 +114,18 @@ function addMixin(target) {
     target[key] = objectPropertiesMixin[key]
   })
 }
-/**
- * Returns a key for an object that can be used as a custom property in MicroStrategy
- * 
- * @param {string} objectId 
- * @returns {string} MicroStrategy-safe custom property key
- */
-function getObjectCustomPropertyKey (objectId) {
-  return `obj-${objectId}`
-}
-
-function updateMetadataUUID (viz) {
-  let metadata = viz.getProperty('mstr-viz-object-custom-props')
-  metadata.uuid = uuidv4()
-  viz.setProperty('mstr-viz-object-custom-props', metadata, { suppressData: true })
-}
-
-function checkMetdataVersion (viz) {
-  let metadata = viz.getProperty('mstr-viz-object-custom-props')
-  if (!metadata) {
-    upgradeCustomObjectProperties (viz)
-    metadata = { 
-      version: 'v1',
-      uuid: uuidv4()
-    }
-    viz.setProperty('mstr-viz-object-custom-props', metadata)
-  }
-}
-
-function upgradeCustomObjectProperties (viz) {
-  let properties = viz.getProperties()
-  let objCustProps = {}
-  Object.keys(properties).forEach((key) => {
-    var parts = key.split('-')
-    if (parts.length == 3) {
-      let prefix = parts[0]
-      let objID = parts[1]
-      let propName = parts[2]
-      if (prefix === 'metric' || prefix === 'object') {
-        let prefixedObjID = 'obj-' + objID
-        if (!objCustProps[prefixedObjID]) {
-          objCustProps[prefixedObjID] = {}
-        }
-        objCustProps[prefixedObjID][propName] = properties[key]
-        delete properties[key]
-      }
-    }
-  })
-  Object.keys(objCustProps).forEach((key) => {
-    viz.setProperty(key, objCustProps[key], { suppressData: true })
-  })
-}
-
-function deleteProperty (prop) {
-  let properties = this.getProperties()
-  delete properties[prop]
-  updateMetadataUUID(this)
-}
-
-function decodeValue (val) {
-  let returnVal = val
-  if (typeof val === 'string') {
-    try {
-      returnVal = JSON.parse(val)
-    } catch (error) {}
-  }
-  return returnVal
-}
-
-function encodeValue (val) {
-  let returnVal = val
-  if (typeof val === 'object') {
-    try {
-      returnVal = JSON.stringify(val)
-    } catch (error) {}
-  }
-  return returnVal
-}
-
-/**
- * Saves a property pertaining to a specific object into the MicroStrategy object model
- *
- * @param {string} objectId the object UUID
- * @param {string} prop the property name to save
- * @param {string} value the property value to save
- * @returns {void}
- */
-function setObjectCustomProperty (objectId, prop, value, configObject) {
-  checkMetdataVersion(this)
-  let objectKey = getObjectCustomPropertyKey(objectId)
-  let objectProperties = this.getObjectProperties(objectId)
-  if (!objectProperties) {
-    objectProperties = {}
-  }
-  let oldPropValue = objectProperties[prop]
-  if (value != oldPropValue) {
-      objectProperties[prop] = value
-  }
-  this.setProperty(objectKey, JSON.stringify(objectProperties), configObject)
-}
-
-/**
- * Retrieves a property pertaining to a specific object from the MicroStrategy object model
- *
- * @param {string} objectId the object UUID
- * @param {string} prop the property name to retrieve
- * @returns {string} the property value
- */
-function getObjectCustomProperty (objectId, prop) {
-  checkMetdataVersion(this)
-  let objectProps = this.getObjectProperties(objectId)
-  return objectProps ? objectProps[prop] : undefined
-}
-
-/**
- * Retrieves all properties pertaining to a specific object from the MicroStrategy object model
- *
- * @param {any} objectId the object UUID
- * @returns {Object} a map of all the properties
- */
-function getObjectProperties (objectId) {
-  checkMetdataVersion(this)
-  let props = this.getProperties()
-  return decodeValue(props[getObjectCustomPropertyKey(objectId)])
-}
 
 let objectPropertiesMixin = {
-  deleteProperty,
+  deleteObjectProperties,
   getObjectProperties,
+  getObjectsProperties,
   getObjectCustomProperty,
-  setObjectCustomProperty
+  setObjectCustomProperty,
+  migrateCustomObjectProps
 }
 
 export {
   addMixin,
-  objectPropertiesMixin
+  objectPropertiesMixin,
+  CUSTOM_PROPERTY_NAME
 }
