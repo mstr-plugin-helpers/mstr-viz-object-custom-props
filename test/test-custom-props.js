@@ -152,7 +152,34 @@ describe('#migrateCustomObjectProps()', function () {
       newProps.includes(el)
     }).length.should.equal(0)
   })
+})
 
+describe('#deleteObjectProperties()', function () {
+  it('should remove all object properties', function () {
+    let jsonTest = JSON.stringify({
+      prop1: 'value1',
+      prop2: 'value2'
+     })
+    let escapedJsonText = escape(jsonTest)
+    let testProperties = {
+      'metric-574912-prop1': 'value1',
+      'metric-574912-prop2': 'value2',
+      'obj-253469-prop1': 'value1',
+      'obj-253469-prop2': 'value2',
+      'obj-313505': {
+        prop1: 'value1',
+        prop2: 'value2'
+      },
+      'obj-a': jsonTest,
+      'obj-b': escapedJsonText
+    }
+
+    let vizMock = new VizMock(testProperties)
+    addMixin(vizMock)
+
+    vizMock.deleteObjectProperties('253469')
+    vizMock.getObjectProperties('253469').should.deep.equal({})
+  })
 })
 
 

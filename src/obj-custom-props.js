@@ -43,9 +43,9 @@ function setObjectCustomProperty(objectId, objectProp, propValue, configObject) 
 }
 
 function deleteObjectProperties(objectId, configObject) {
-  let objectsProperties = getObjectsProperties()
+  let objectsProperties = this.getObjectsProperties()
   delete objectsProperties[objectId]
-  setProperty.call(this, CUSTOM_PROPERTY_NAME, pickle(objectsProperties), configObject)
+  this.setProperty(CUSTOM_PROPERTY_NAME, pickle(objectsProperties), configObject)
 }
 
 function migrateCustomObjectProps() {
