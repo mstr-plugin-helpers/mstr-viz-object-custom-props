@@ -16,3 +16,5 @@ Add `objectPropertiesMixin` as a mixin to your custom visualisation class constr
 * `setObjectCustomProperty(objectId, objectProp, propValue, configObject)`
 * `deleteObjectProperties(objectId, configObject)`
 * `migrateCustomObjectProps()`
+
+Full documentation is available at [https://mstr-plugin-helpers.github.io/mstr-viz-object-custom-props/](https://mstr-plugin-helpers.github.io/mstr-viz-object-custom-props/)
